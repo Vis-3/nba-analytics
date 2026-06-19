@@ -1,7 +1,7 @@
 import requests
 import os
 
-host = 'https://dbc-3033e85b-9133.cloud.databricks.com'
+host = 'https://dbc-303xxxxxx.cloud.databricks.com'
 token = ''
 local_path = r'C:\Users\sansk\Downloads\nba.sqlite\nba.sqlite'
 volume_path = '/Volumes/workspace/bronze_nba/raw_files/nba.sqlite'
