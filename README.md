@@ -28,7 +28,8 @@ Three-point attempt rate grew **50% in nine years** -- from 0.26 in 2013 to 0.40
 
 The 1994 spike (when the NBA shortened the 3pt line) and the 1997 drop (when they moved it back) are both visible in the data without any labels -- the pipeline just shows you what happened.
 
-![Pace Revolution Chart](assets/pace_revolution.png)
+<img width="1287" height="617" alt="image" src="https://github.com/user-attachments/assets/395a915c-7a0c-4c57-87a1-f6ad71cf8302" />
+
 
 ### Style Fingerprints
 KMeans clustering on 10 style dimensions with no era labels given. The model found six clusters and labeled them by their stat profiles:
@@ -49,12 +50,14 @@ What the model found without being told:
 - 2018: 15 of 30 teams classified as "Warriors Style" -- peak copycat era.
 - 2020 onward: league settles into two mature modern styles.
 
-![Style Distribution Chart](assets/style_distribution.png)
+<img width="1297" height="602" alt="image" src="https://github.com/user-attachments/assets/1b8cf313-6c43-4bbc-88e3-b1a24aeba542" />
+
 
 ### Championship DNA
 XGBoost predicting conference finals appearance from regular season stats. Trained on 2009-2018, tested on 2019-2022. ROC-AUC: **0.791**.
 
 SHAP attribution on the test set:
+<img width="962" height="712" alt="image" src="https://github.com/user-attachments/assets/c9a1cde6-8320-4b41-b6a5-59bd2567ea45" />
 
 - **Turnover rate** -- the strongest style predictor. Low turnovers push strongly toward championship contention. Playoff defense is tighter; teams that turn it over in the regular season get exposed.
 - **Offensive rebounding** -- second chance points matter more in playoff series where every possession counts.
