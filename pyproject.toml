@@ -1,0 +1,11 @@
+[project]
+name = "pace-and-space"
+version = "0.1.0"
+description = "NBA team strategy analytics pipeline on Databricks -- PySpark, Delta Lake, XGBoost"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "databricks-cli>=0.18.0",
+    "nba_api>=1.11.4",
+    "requests>=2.34.0",
+]
