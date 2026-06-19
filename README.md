@@ -142,33 +142,6 @@ flowchart TD
 
 ---
 
-## Key Design Decisions
-
-Every decision below came up in building this. Each one has a reason.
-
-**Why Delta Lake over plain Parquet?**
-A 44-season backfill will fail partway through. With plain Parquet, a mid-write crash produces a partially written file -- wrong numbers with no error. Delta's atomicity means a failed write never appears. Seasons that completed are safe. Silver adds schema enforcement (rejects malformed rows). Gold uses time travel.
-
-**Why PySpark throughout?**
-The cluster is already running in Databricks serverless. Switching to Pandas mid-pipeline adds conversion overhead and two mental models in the same codebase. The 13.6M row play-by-play table is the architectural justification. Everything else rides along for free.
-
-**Why Z-order over partitioning?**
-Partitioning on `season_year` creates 44+ folders. On Databricks serverless, many small partitions degrade I/O performance. Z-ordering co-locates rows with similar `season_year` and `team_id` values within files -- queries filter on either dimension while avoiding the small file problem.
-
-**Why not use play-by-play for analysis?**
-All three analytical pillars are answerable from aggregated box score stats. The nba_api pre-computes pace, 3pt rate, and ratings at the team-game level. Play-by-play is ingested to Bronze and serves as the architectural justification for PySpark -- 13.6M rows is the number that makes "why not just use Pandas" a genuine question with a genuine answer.
-
-**Why temporal train/test split?**
-Stratified random split would leak future team style patterns into past predictions. A team's 2022 style fingerprint would inform predictions about 2015 playoff outcomes. Temporal split matches real deployment: train on history, predict the current season.
-
-**Why scale_pos_weight over SMOTE?**
-52 conference finalists out of 390 total team-seasons. scale_pos_weight = 338/52 = 6.5 tells XGBoost to weight positive examples 6.5x in gradient updates. SMOTE generates synthetic examples by interpolating between 52 real ones -- risky on a small sample where interpolated points may not represent real team profiles.
-
-**Why conference finals, not championship?**
-"Won championship" gives 1 positive per 30 teams per season -- too sparse. "Made playoffs" gives 16 of 30 -- too easy, model learns nothing. "Reached conference finals" gives 4 positives per season, is a meaningful basketball threshold (top 4 teams in the league), and yields 52 positive examples across 13 seasons.
-
----
-
 ## Data Source
 
 Kaggle -- [NBA Database by wyattowalsh](https://www.kaggle.com/datasets/wyattowalsh/basketball)
@@ -201,10 +174,3 @@ MLflow results visible at `/Shared/championship_dna` in your workspace after run
 
 ---
 
-## Resume Bullets
-
-**Data Engineering**
-Built Pace and Space, an NBA analytics pipeline on Databricks -- PySpark 4.1 processing 14M rows through Delta Lake medallion architecture (Bronze/Silver/Gold), Z-ordered by season and team for query optimization, with MLflow experiment tracking and Unity Catalog storage
-
-**Data Science**
-Engineered Championship DNA model predicting NBA playoff success from regular season metrics -- XGBoost classifier with temporal train/test split and scale_pos_weight for class imbalance (ROC-AUC 0.791), SHAP attribution identifying turnover rate and offensive rebounding as dominant predictors over pace and three-point rate; KMeans clustering on 10-dimension style vectors detected the Warriors revolution without era labels
